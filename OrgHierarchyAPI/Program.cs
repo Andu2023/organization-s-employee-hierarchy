@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using OrgHierarchyAPI.AutoMapper;
 using OrgHierarchyAPI.Models;
 using OrgHierarchyAPI.Repository;
@@ -19,6 +20,14 @@ builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddAutoMapper(typeof(PositionMappingProfile));
 //builder.Services.AddScoped<PositionService>();
+//serilog
+var _loggrer = new LoggerConfiguration()
+.ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext()
+ //.MinimumLevel.Error()
+ //.WriteTo.File("C:\\Project\\Logs\\ApiLog-.log", rollingInterval: RollingInterval.Day)
+.CreateLogger();
+builder.Logging.AddSerilog(_loggrer);
+
 
 var app = builder.Build();
 

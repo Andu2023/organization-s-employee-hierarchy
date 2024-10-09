@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Serilog;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrgHierarchyAPI.DTOs;
 using OrgHierarchyAPI.Models;
 using OrgHierarchyAPI.Services;
+using OrgHierarchyAPI.Repository;
 
 namespace OrgHierarchyAPI.Controllers
 {
@@ -13,11 +15,13 @@ namespace OrgHierarchyAPI.Controllers
     {
         private readonly IPositionService _positionService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PositionRepository> _logger;
 
-        public PositionsController(IPositionService positionService, IMapper mapper)
+        public PositionsController(IPositionService positionService, IMapper mapper,ILogger<PositionRepository> _logger)
         {
             _positionService = positionService;
             _mapper = mapper;
+            this._logger = _logger;
         }
 
         // GET: api/positions
@@ -88,7 +92,8 @@ namespace OrgHierarchyAPI.Controllers
             var existingPosition = await _positionService.GetPositionByIdAsync(id);
             if (existingPosition == null)
             {
-                return NotFound();
+                _logger.LogWarning("Position with ID: {Id} not found", id);
+                return BadRequest("postion is not found.");
             }
 
             _mapper.Map(positionDto, existingPosition);
@@ -107,7 +112,8 @@ namespace OrgHierarchyAPI.Controllers
             var position = await _positionService.GetPositionByIdAsync(id);
             if (position == null)
             {
-                return NotFound();
+                _logger.LogWarning("Position with ID: {Id} not found", id);
+                return BadRequest("Cannot delete a Null  position that has child positions. Please remove or reassign the children first.");
             }
 
             // Check if the position has any children
@@ -116,9 +122,24 @@ namespace OrgHierarchyAPI.Controllers
                 return BadRequest("Cannot delete a position that has child positions. Please remove or reassign the children first.");
             }
 
+            if (position.Children != null && position.Children.Any())
+            {
+                _logger.LogWarning("Attempt to delete Position ID: {Id} that has child positions. Deletion aborted.", id);
+                return BadRequest("Cannot delete a position that has child positions. Please remove or reassign the children first.");
+            }
             // If there are no children, proceed with deletion
-            await _positionService.DeletePositionAsync(id);
-            return NoContent();
+            try
+            {
+                // If there are no children, proceed with deletion
+                await _positionService.DeletePositionAsync(id);
+                _logger.LogInformation("Position with ID: {Id} successfully deleted", id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting Position ID: {Id}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the position.");
+            }
         }
     }
 }
