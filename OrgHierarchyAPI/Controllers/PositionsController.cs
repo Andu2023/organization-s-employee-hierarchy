@@ -42,6 +42,19 @@ namespace OrgHierarchyAPI.Controllers
             var positionDto = _mapper.Map<PositionDto>(position);
             return Ok(positionDto);
         }
+        // GET: api/positions/{id}/children
+        [HttpGet("{id}/children")]
+        public async Task<IActionResult> GetChildrenOfPosition(Guid id)
+        {
+            var children = await _positionService.GetChildrenOfPositionAsync(id);
+            if (children == null || !children.Any())
+            {
+                return NotFound("No children found for this position.");
+            }
+
+            var childrenDtos = _mapper.Map<IEnumerable<PositionDto>>(children);
+            return Ok(childrenDtos);
+        }
 
         // GET: api/positions/tree
         [HttpGet("tree")]

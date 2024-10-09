@@ -29,6 +29,12 @@ namespace OrgHierarchyAPI.Repository
                 .Include(p => p.Children)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+        public async Task<IEnumerable<Position>> GetChildrenOfPositionAsync(Guid id)
+        {
+            return await _context.Positions
+                .Where(p => p.ParentId == id) // Fetch positions where ParentId matches the given id
+                .ToListAsync();
+        }
 
         public async Task<Position> AddPositionAsync(Position position)
         {

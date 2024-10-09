@@ -21,6 +21,10 @@ namespace OrgHierarchyAPI.Services
         {
             return _repository.GetPositionByIdAsync(id);
         }
+        public Task<IEnumerable<Position>> GetChildrenOfPositionAsync(Guid id)
+        {
+            return _repository.GetChildrenOfPositionAsync(id);
+        }
 
         public Task<Position> AddPositionAsync(Position position)
         {

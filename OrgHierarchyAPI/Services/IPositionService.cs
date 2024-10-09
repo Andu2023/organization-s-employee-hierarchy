@@ -10,5 +10,6 @@ namespace OrgHierarchyAPI.Services
         Task<Position> UpdatePositionAsync(Position position);
         Task DeletePositionAsync(Guid id);
         Task<IEnumerable<Position>> GetPositionTreeAsync();
+        Task<IEnumerable<Position>> GetChildrenOfPositionAsync(Guid id);
     }
 }
