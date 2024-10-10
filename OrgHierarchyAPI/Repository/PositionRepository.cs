@@ -62,6 +62,15 @@ namespace OrgHierarchyAPI.Repository
             var allPositions = await _context.Positions.ToListAsync();
             return BuildTree(allPositions);
         }
+        public async Task<bool> PositionNameExistsAsync(string name)
+        {
+            return await _context.Positions.AnyAsync(p => p.Name == name);  // Check for duplicate name
+        }
+        // New method to get the root position (ParentId is null)
+        public async Task<Position> GetRootPositionAsync()
+        {
+            return await _context.Positions.FirstOrDefaultAsync(p => p.ParentId == null);
+        }
 
         private List<Position> BuildTree(IEnumerable<Position> allPositions)
         {

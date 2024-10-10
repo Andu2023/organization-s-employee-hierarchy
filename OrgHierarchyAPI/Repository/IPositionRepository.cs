@@ -11,5 +11,7 @@ namespace OrgHierarchyAPI.Repository
         Task DeletePositionAsync(Guid id);
         Task<IEnumerable<Position>> GetPositionTreeAsync();
         Task<IEnumerable<Position>> GetChildrenOfPositionAsync(Guid id);
+        Task<bool> PositionNameExistsAsync(string name);
+        Task<Position> GetRootPositionAsync();
     }
 }

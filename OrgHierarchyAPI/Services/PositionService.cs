@@ -26,9 +26,26 @@ namespace OrgHierarchyAPI.Services
             return _repository.GetChildrenOfPositionAsync(id);
         }
 
-        public Task<Position> AddPositionAsync(Position position)
+        public async Task<Position> AddPositionAsync(Position position)
         {
-            return _repository.AddPositionAsync(position);
+            // Check if the position name already exists
+            if (await _repository.PositionNameExistsAsync(position.Name))
+            {
+                throw new ArgumentException($"A position with the name '{position.Name}' already exists.");
+            }
+            // Check if the position being created is a root position (ParentId is null)
+            if (position.ParentId == null)
+            {
+                // Fetch any existing root position
+                var existingRootPosition = await _repository.GetRootPositionAsync();
+                if (existingRootPosition != null)
+                {
+                    // Throw an exception or return an error if a root position already exists
+                    throw new InvalidOperationException("A root position already exists. New positions must have a parent.");
+                }
+            }
+
+            return await _repository.AddPositionAsync(position);
         }
 
         public Task<Position> UpdatePositionAsync(Position position)
