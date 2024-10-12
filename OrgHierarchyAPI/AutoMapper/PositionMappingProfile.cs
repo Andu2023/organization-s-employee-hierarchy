@@ -12,6 +12,12 @@ namespace OrgHierarchyAPI.AutoMapper
             CreateMap<Position, PositionCreateUpdateDto>().ReverseMap();
             CreateMap<Position, PositionTreeDto>()
                 .ForMember(dest => dest.Children, opt => opt.MapFrom(src => src.Children));
+            // Mapping from Employee to EmployeeDto
+            CreateMap<Employee, EmployeeDto>()
+                .ForMember(dest => dest.PositionTitle, opt => opt.MapFrom(src => src.Position.Name)); // Map Position Title
+
+            // Mapping from EmployeeCreateDto to Employee
+            CreateMap<EmployeeCreateDto, Employee>();
         }
     }
 }

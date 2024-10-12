@@ -18,6 +18,7 @@ builder.Services.AddDbContext<HierarchyContext>(options =>
 
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddAutoMapper(typeof(PositionMappingProfile));
 //builder.Services.AddScoped<PositionService>();
 //serilog

@@ -15,5 +15,7 @@ namespace OrgHierarchyAPI.Models
 
         // Navigation property for child positions
         public ICollection<Position> Children { get; set; } = new List<Position>();
+        // Navigation properties for relationships
+        public ICollection<Employee> Employees { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace OrgHierarchyAPI.Models
     public class HierarchyContext : DbContext
     {
         public DbSet<Position> Positions { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         public HierarchyContext(DbContextOptions<HierarchyContext> options) : base(options) { }
 
@@ -20,6 +21,12 @@ namespace OrgHierarchyAPI.Models
                 .HasForeignKey(p => p.ParentId) // Use ParentId as the foreign key
                 .IsRequired(false) // ParentId can be null (for positions like CEO)
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascading deletes
+                                                    // Configure cascade delete behavior for PositionId
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Position)
+                .WithMany(p => p.Employees)
+                .HasForeignKey(e => e.PositionId)
+                .OnDelete(DeleteBehavior.Cascade); // Keep cascade delete if needed
         }
 
     } }

@@ -22,6 +22,46 @@ namespace OrgHierarchyAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("OrgHierarchyAPI.Models.Employee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PositionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PositionId");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("OrgHierarchyAPI.Models.Position", b =>
                 {
                     b.Property<Guid>("Id")
@@ -46,6 +86,17 @@ namespace OrgHierarchyAPI.Migrations
                     b.ToTable("Positions");
                 });
 
+            modelBuilder.Entity("OrgHierarchyAPI.Models.Employee", b =>
+                {
+                    b.HasOne("OrgHierarchyAPI.Models.Position", "Position")
+                        .WithMany("Employees")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Position");
+                });
+
             modelBuilder.Entity("OrgHierarchyAPI.Models.Position", b =>
                 {
                     b.HasOne("OrgHierarchyAPI.Models.Position", "Parent")
@@ -59,6 +110,8 @@ namespace OrgHierarchyAPI.Migrations
             modelBuilder.Entity("OrgHierarchyAPI.Models.Position", b =>
                 {
                     b.Navigation("Children");
+
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
