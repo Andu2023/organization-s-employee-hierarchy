@@ -16,10 +16,9 @@ namespace OrgHierarchyAPI.Repository
 
         public async Task<IEnumerable<Position>> GetAllPositionsAsync()
         {
-            //return await _context.Positions.ToListAsync();
-             // Fetch all positions, including children if needed, and handle any potential nulls.
-    return await _context.Positions
-        .Include(p => p.Children) // Include children if you need them
+             // Fetch all positions, including children 
+      return await _context.Positions
+        .Include(p => p.Children) 
         .ToListAsync();
         }
 

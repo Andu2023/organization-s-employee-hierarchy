@@ -7,6 +7,6 @@
         public string LastName { get; set; }
         public string MiddleName { get; set; }
         public Guid PositionId { get; set; }
-        public string PositionTitle { get; set; } // Position Title for better clarity
+        public string PositionTitle { get; set; } 
     }
 }
